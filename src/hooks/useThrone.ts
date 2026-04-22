@@ -199,7 +199,7 @@ export function useThrone() {
           type:      "season",
           king:      args[0] as string,
           nickname:  "",
-          extra:     `Szezon #${args[1]} vége — nyeremény: ${ethers.formatEther(args[3] as bigint)} QANX`,
+          extra:     `Season #${args[1]} ended — prize: ${ethers.formatEther(args[3] as bigint)} QANX`,
           timestamp: ts,
         });
       }
@@ -216,14 +216,14 @@ export function useThrone() {
   const connectWallet = useCallback(async () => {
     const eth = (window as any).ethereum;
     if (!eth) {
-      setError("MetaMask nem található! Telepítsd: metamask.io");
+      setError("MetaMask not found! Install it at: metamask.io");
       return;
     }
     try {
       setError("");
       // Raw EIP-1193 kérés — nincs ethers.js BrowserProvider közvetítő
       const accounts: string[] = await eth.request({ method: "eth_requestAccounts" });
-      if (!accounts.length) { setError("Nincs elérhető account a MetaMask-ban."); return; }
+      if (!accounts.length) { setError("No accounts available in MetaMask."); return; }
 
       const chainIdHex: string = await eth.request({ method: "eth_chainId" });
       const chainIdNum = parseInt(chainIdHex, 16);
@@ -237,9 +237,9 @@ export function useThrone() {
       }
     } catch (e: any) {
       if (e?.code === 4001 || e?.message?.includes("rejected") || e?.message?.includes("denied")) {
-        setError("Kapcsolatot visszautasítottad. Kérjük engedélyezd a MetaMask-ban!");
+        setError("Connection rejected. Please allow access in MetaMask!");
       } else {
-        setError(e?.message || "Wallet csatlakozási hiba");
+        setError(e?.message || "Wallet connection error");
       }
     }
   }, []);
@@ -260,10 +260,10 @@ export function useThrone() {
           });
           setChainOk(true);
         } catch (addErr: any) {
-          setError("QAN TestNet hozzáadása sikertelen: " + addErr.message);
+          setError("Failed to add QAN TestNet: " + addErr.message);
         }
       } else {
-        setError("Hálózat váltás sikertelen: " + switchErr.message);
+        setError("Network switch failed: " + switchErr.message);
       }
     }
   };
@@ -271,10 +271,10 @@ export function useThrone() {
   // ── Trón foglalása — raw eth_sendTransaction (nincs estimateGas) ──
   const claimThrone = useCallback(async (nickname: string): Promise<boolean> => {
     const eth = (window as any).ethereum;
-    if (!wallet)  { setError("Nem csatlakoztál walletre!"); return false; }
-    if (!chainOk) { setError("Kapcsolódj a QAN TestNethez!"); return false; }
-    if (nickname.trim().length < 2) { setError("A becenév legalább 2 karakter!"); return false; }
-    if (!eth) { setError("MetaMask nem elérhető!"); return false; }
+    if (!wallet)  { setError("Wallet not connected!"); return false; }
+    if (!chainOk) { setError("Connect to QAN TestNet!"); return false; }
+    if (nickname.trim().length < 2) { setError("Nickname must be at least 2 characters!"); return false; }
+    if (!eth) { setError("MetaMask not available!"); return false; }
 
     setError("");
     setTxPending(true);
@@ -315,9 +315,9 @@ export function useThrone() {
       setTimeout(() => fetchAll(), 3000);
       return true;
     } catch (e: any) {
-      const msg: string = e?.reason || e?.message || "Tranzakció hiba";
+      const msg: string = e?.reason || e?.message || "Transaction error";
       if (e?.code === 4001 || msg.includes("user rejected") || msg.includes("denied")) {
-        setError("Tranzakciót visszautasítottad.");
+        setError("Transaction rejected.");
       } else {
         setError(msg);
       }
