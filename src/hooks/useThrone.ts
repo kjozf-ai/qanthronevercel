@@ -292,7 +292,7 @@ export function useThrone() {
           to:    throneAddr,
           value: "0x" + BigInt(ENTRY_FEE_WEI).toString(16),
           data:  data,
-          gas:   "0x493E0",
+          gas:   "0xC3500",
         }],
       });
 
