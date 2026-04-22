@@ -285,14 +285,18 @@ export function useThrone() {
 
       // Raw eth_sendTransaction — nincs estimateGas, nincs BrowserProvider közvetítő
       // gas: 0x493E0 = 300000 decimálisan
+      // Type 0 (legacy) tranzakcio explicit gasPrice-szal
+      // QAN TestNet RPC nem tamogatja megbizhato EIP-1559 dijbecslest
       const txHash: string = await eth.request({
         method: "eth_sendTransaction",
         params: [{
-          from:  wallet,
-          to:    throneAddr,
-          value: "0x" + BigInt(ENTRY_FEE_WEI).toString(16),
-          data:  data,
-          gas:   "0xC3500",
+          from:     wallet,
+          to:       throneAddr,
+          value:    "0x" + BigInt(ENTRY_FEE_WEI).toString(16),
+          data:     data,
+          gas:      "0xC3500",    // 800 000 - eleg a teljes claim logikara
+          gasPrice: "0x3B9ACA00", // 1 Gwei - QAN TestNeten elegendo
+          type:     "0x0",        // legacy, elkeruli az EIP-1559 RPC hibakat
         }],
       });
 
