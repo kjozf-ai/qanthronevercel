@@ -296,13 +296,19 @@ export function useThrone() {
         }],
       });
 
-      // Visszaigazolásra várunk a read-only provider segítségével
+      // Visszaigazolásra várunk - ha timeout, akkor is frissitunk
       if (roProvider.current) {
-        await roProvider.current.waitForTransaction(txHash, 1, 120000);
+        try {
+          await roProvider.current.waitForTransaction(txHash, 1, 60000);
+        } catch (waitErr) {
+          console.warn("waitForTransaction timeout - tranzakcio lehet sikeres:", waitErr);
+        }
       }
 
       setTxPending(false);
       await fetchAll();
+      // Masodszor is frissitunk 3 masodperc mulva (blokk keshet)
+      setTimeout(() => fetchAll(), 3000);
       return true;
     } catch (e: any) {
       const msg: string = e?.reason || e?.message || "Tranzakció hiba";

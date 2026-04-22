@@ -221,7 +221,7 @@ export function ThroneHero({
                 maxLength={24}
                 minLength={2}
                 required
-                className="flex-1 bg-throne-surface border border-throne-border rounded-xl px-4 py-3 text-throne-text placeholder-throne-muted/50 focus:outline-none focus:border-throne-gold/50 focus:ring-1 focus:ring-throne-gold/30 font-sans transition-all"
+                className="flex-1 bg-throne-surface border border-throne-border rounded-xl px-4 py-3 text-black placeholder-gray-400 focus:outline-none focus:border-throne-gold/50 focus:ring-1 focus:ring-throne-gold/30 font-sans transition-all"
               />
               <button
                 type="submit"
