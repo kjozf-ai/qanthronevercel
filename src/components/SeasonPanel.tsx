@@ -53,7 +53,7 @@ export function SeasonPanel({ season }: Props) {
   const s = remaining % 60;
   const fmt = (n: number) => String(n).padStart(2, "0");
   const timeStr = d > 0
-    ? `${d}n ${fmt(h)}:${fmt(m)}:${fmt(s)}`
+    ? `${d}d ${fmt(h)}:${fmt(m)}:${fmt(s)}`
     : `${fmt(h)}:${fmt(m)}:${fmt(s)}`;
 
   const isEnded = remaining === 0;
@@ -65,15 +65,15 @@ export function SeasonPanel({ season }: Props) {
         <div className="flex items-center justify-between mb-5">
           <div>
             <h2 className="font-display font-bold text-xl text-gradient-gold">
-              🏅 Szezon #{season.number}
+              🏅 Season #{season.number}
             </h2>
             <p className="text-throne-muted text-xs mt-0.5">
-              Aki legtöbbet ül a trónon, nyeri a szezont
+              The player who sits on the throne the longest wins the season
             </p>
           </div>
           {!isEnded && (
             <div className="text-right">
-              <div className="text-throne-muted text-xs uppercase tracking-wider">Hátralévő idő</div>
+              <div className="text-throne-muted text-xs uppercase tracking-wider">Time Remaining</div>
               <div className="font-mono font-bold text-throne-gold2 text-lg tabular-nums">
                 {timeStr}
               </div>
@@ -81,7 +81,7 @@ export function SeasonPanel({ season }: Props) {
           )}
           {isEnded && (
             <div className="bg-throne-gold/10 border border-throne-gold/30 text-throne-gold text-sm px-4 py-2 rounded-xl animate-bounce-sm">
-              🎉 A szezon véget ért!
+              🎉 Season ended!
             </div>
           )}
         </div>
@@ -90,29 +90,29 @@ export function SeasonPanel({ season }: Props) {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           <StatCard
             icon="🏆"
-            label="Szezon nyereménypot"
+            label="Season Prize Pot"
             value={`${parseFloat(season.pot).toFixed(4)}`}
             sub="QANX"
           />
           <StatCard
             icon="👑"
-            label="Egyedi királyok"
+            label="Unique Kings"
             value={season.totalKings.toString()}
-            sub="játékos"
+            sub="players"
           />
           <StatCard
             icon="⚔️"
-            label="Összes foglalás"
+            label="Total Claims"
             value={season.claims.toString()}
-            sub="alkalom"
+            sub="times"
           />
           <StatCard
             icon="⏰"
-            label="Szezon vége"
-            value={new Date(season.ends * 1000).toLocaleDateString("hu-HU", {
+            label="Season End"
+            value={new Date(season.ends * 1000).toLocaleDateString("en-US", {
               month: "short", day: "numeric",
             })}
-            sub={new Date(season.ends * 1000).toLocaleTimeString("hu-HU", {
+            sub={new Date(season.ends * 1000).toLocaleTimeString("en-US", {
               hour: "2-digit", minute: "2-digit",
             })}
           />
@@ -122,8 +122,8 @@ export function SeasonPanel({ season }: Props) {
         {!isEnded && season.ends > season.start && (
           <div className="mt-4">
             <div className="flex justify-between text-xs text-throne-muted mb-1">
-              <span>Szezon kezdete</span>
-              <span>Vége</span>
+              <span>Season Start</span>
+              <span>End</span>
             </div>
             <div className="h-1.5 bg-throne-border rounded-full overflow-hidden">
               <div

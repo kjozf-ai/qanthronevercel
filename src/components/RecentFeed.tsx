@@ -7,10 +7,10 @@ interface Props {
 
 function timeAgo(ts: number): string {
   const diff = Math.floor(Date.now() / 1000) - ts;
-  if (diff < 60)   return `${diff}mp`;
-  if (diff < 3600) return `${Math.floor(diff / 60)}p`;
-  if (diff < 86400)return `${Math.floor(diff / 3600)}ó`;
-  return `${Math.floor(diff / 86400)}n`;
+  if (diff < 60)    return `${diff}s`;
+  if (diff < 3600)  return `${Math.floor(diff / 60)}m`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h`;
+  return `${Math.floor(diff / 86400)}d`;
 }
 
 function shortAddr(a: string) {
@@ -21,9 +21,9 @@ function EventRow({ ev }: { ev: FeedEvent }) {
   const name = ev.nickname || shortAddr(ev.king);
 
   const content = ev.type === "claimed"
-    ? <><span className="text-throne-gold font-semibold">{name}</span> <span className="text-throne-muted">elfoglalta a trónt</span> 👑</>
+    ? <><span className="text-throne-gold font-semibold">{name}</span> <span className="text-throne-muted">claimed the throne</span> 👑</>
     : ev.type === "achievement"
-    ? <><span className="text-throne-purple2 font-semibold">{shortAddr(ev.king)}</span> <span className="text-throne-muted">megszerezte:</span> <span className="text-throne-gold2">{ev.extra}</span> 🏅</>
+    ? <><span className="text-throne-purple2 font-semibold">{shortAddr(ev.king)}</span> <span className="text-throne-muted">unlocked:</span> <span className="text-throne-gold2">{ev.extra}</span> 🏅</>
     : <><span className="text-throne-success">{ev.extra}</span> 🏆</>;
 
   const dot = ev.type === "claimed"
@@ -45,13 +45,13 @@ export function RecentFeed({ events }: Props) {
   return (
     <div className="bg-panel border border-throne-border rounded-2xl p-6 h-full">
         <h2 className="font-display font-bold text-xl text-gradient-gold mb-4 flex items-center gap-2">
-          <span>⚡</span> Élő feed
+          <span>⚡</span> Live Feed
           <span className="ml-auto w-2 h-2 rounded-full bg-throne-success animate-pulse" />
         </h2>
 
         {!events.length ? (
           <div className="text-center py-10 text-throne-muted">
-            <p className="text-sm">Még nem történt semmi. Légy az első!</p>
+            <p className="text-sm">Nothing happened yet. Be the first!</p>
           </div>
         ) : (
           <div className="max-h-80 overflow-y-auto pr-1">

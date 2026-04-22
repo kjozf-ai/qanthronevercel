@@ -15,10 +15,10 @@ export function ShareCard({ king, season }: Props) {
   const name = king.nickname || shortAddr(king.address);
 
   const shareText =
-    `👑 Én vagyok a QAN Throne királya!\n` +
-    `Név: ${name}\n` +
-    `Szezon: #${season}\n` +
-    `Cím: ${king.address}\n` +
+    `👑 I am the QAN Throne King!\n` +
+    `Name: ${name}\n` +
+    `Season: #${season}\n` +
+    `Address: ${king.address}\n` +
     `\n🔗 qanplatform.com | #QANThrone`;
 
   async function handleCopy() {
@@ -42,7 +42,7 @@ export function ShareCard({ king, season }: Props) {
           onClick={() => setOpen(true)}
           className="text-throne-muted text-sm hover:text-throne-gold transition-colors flex items-center gap-1.5"
         >
-          <span>🔗</span> Eredménykártya megosztása
+          <span>🔗</span> Share Result Card
         </button>
       </div>
     );
@@ -52,7 +52,7 @@ export function ShareCard({ king, season }: Props) {
     <div className="max-w-5xl mx-auto px-4 py-4">
       <div className="bg-panel border border-throne-border rounded-2xl p-6">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="font-display font-bold text-throne-gold">📤 Megosztás</h3>
+          <h3 className="font-display font-bold text-throne-gold">📤 Share</h3>
           <button onClick={() => setOpen(false)} className="text-throne-muted hover:text-throne-text">✕</button>
         </div>
 
@@ -64,7 +64,7 @@ export function ShareCard({ king, season }: Props) {
             QAN THRONE
           </div>
           <div className="text-throne-muted text-xs uppercase tracking-widest mb-4">
-            King of the Hill · Szezon #{season}
+            King of the Hill · Season #{season}
           </div>
           <div className="text-throne-text font-bold text-2xl mb-1">{name}</div>
           <div className="font-mono text-throne-muted text-xs mb-4">{king.address}</div>
@@ -81,13 +81,13 @@ export function ShareCard({ king, season }: Props) {
             onClick={handleCopy}
             className="flex items-center gap-2 bg-throne-surface border border-throne-border text-throne-text px-5 py-2.5 rounded-xl hover:border-throne-gold/40 transition-all text-sm font-medium"
           >
-            {copied ? "✅ Másolva!" : "📋 Szöveg másolása"}
+            {copied ? "✅ Copied!" : "📋 Copy Text"}
           </button>
           <button
             onClick={handleShare}
             className="flex items-center gap-2 bg-gradient-to-r from-throne-gold to-throne-gold2 text-black px-5 py-2.5 rounded-xl font-bold text-sm hover:scale-105 transition-all"
           >
-            🔗 Megosztás
+            🔗 Share
           </button>
         </div>
       </div>

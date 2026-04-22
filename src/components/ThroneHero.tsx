@@ -15,7 +15,7 @@ interface Props {
   onClearError:   () => void;
 }
 
-// ── Trón SVG ────────────────────────────────────────────────
+// ── Crown SVG ────────────────────────────────────────────────
 function CrownSVG({ size = 80 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 100 80" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -47,7 +47,7 @@ function CrownSVG({ size = 80 }: { size?: number }) {
   );
 }
 
-// ── Particle effekt ──────────────────────────────────────────
+// ── Particle effect ──────────────────────────────────────────
 function Particles() {
   return (
     <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -71,7 +71,7 @@ function Particles() {
   );
 }
 
-// ── Reigntime counter ────────────────────────────────────────
+// ── Reign timer ────────────────────────────────────────────
 function ReignTimer({ king }: { king: KingInfo }) {
   const [secs, setSecs] = useState(king.reignSeconds);
   useEffect(() => {
@@ -92,7 +92,62 @@ function ReignTimer({ king }: { king: KingInfo }) {
   );
 }
 
-// ── Fő komponens ─────────────────────────────────────────────
+// ── Nickname edit for saved name ─────────────────────────────
+function SavedNicknameEditor({ wallet }: { wallet: string }) {
+  const key = `throne_nick_${wallet.toLowerCase()}`;
+  const [editing, setEditing] = useState(false);
+  const [value, setValue] = useState(() => localStorage.getItem(key) ?? "");
+
+  function save() {
+    const trimmed = value.trim();
+    if (trimmed.length >= 2) {
+      localStorage.setItem(key, trimmed);
+    }
+    setEditing(false);
+  }
+
+  if (!editing) {
+    return (
+      <button
+        onClick={() => setEditing(true)}
+        className="text-throne-muted text-xs hover:text-throne-gold transition-colors flex items-center gap-1 mt-2"
+        title="Edit your saved nickname"
+      >
+        ✏️ {value ? `Saved name: "${value}"` : "Save a nickname for next time"}
+      </button>
+    );
+  }
+
+  return (
+    <div className="flex items-center gap-2 mt-2">
+      <input
+        type="text"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        onKeyDown={(e) => e.key === "Enter" && save()}
+        maxLength={24}
+        minLength={2}
+        autoFocus
+        className="bg-white border border-throne-border rounded-lg px-3 py-1.5 text-black text-xs focus:outline-none focus:border-throne-gold"
+        placeholder="Your nickname"
+      />
+      <button
+        onClick={save}
+        className="text-xs bg-throne-gold/20 border border-throne-gold/40 text-throne-gold px-3 py-1.5 rounded-lg hover:bg-throne-gold/30 transition-all"
+      >
+        Save
+      </button>
+      <button
+        onClick={() => setEditing(false)}
+        className="text-xs text-throne-muted hover:text-throne-text transition-colors px-1"
+      >
+        Cancel
+      </button>
+    </div>
+  );
+}
+
+// ── Main component ──────────────────────────────────────────
 export function ThroneHero({
   currentKing, wallet, chainOk, txPending, error,
   isConfigured, onConnect, onClaim, onClearError,
@@ -103,10 +158,25 @@ export function ThroneHero({
 
   const isOwnKing = wallet && currentKing?.address?.toLowerCase() === wallet.toLowerCase();
 
+  // Load saved nickname from localStorage when wallet connects
+  useEffect(() => {
+    if (wallet) {
+      const saved = localStorage.getItem(`throne_nick_${wallet.toLowerCase()}`);
+      if (saved) setNickname(saved);
+    } else {
+      setNickname("");
+    }
+  }, [wallet]);
+
   async function handleClaim(e: React.FormEvent) {
     e.preventDefault();
     const ok = await onClaim(nickname);
-    if (ok) { setClaimed(true); setTimeout(() => setClaimed(false), 3000); }
+    if (ok) {
+      // Remember the nickname for this wallet
+      localStorage.setItem(`throne_nick_${wallet.toLowerCase()}`, nickname.trim());
+      setClaimed(true);
+      setTimeout(() => setClaimed(false), 3000);
+    }
   }
 
   const shortAddr = (a: string) => a ? `${a.slice(0, 6)}…${a.slice(-4)}` : "";
@@ -145,7 +215,7 @@ export function ThroneHero({
             {currentKing && currentKing.address !== "0x0000000000000000000000000000000000000000" ? (
               <>
                 <div className="text-throne-muted text-xs uppercase tracking-widest mb-1">
-                  👑 Jelenleg trónoló
+                  👑 Currently on the throne
                 </div>
                 <div className="text-gradient-gold font-display font-bold text-3xl md:text-4xl mb-1">
                   {currentKing.nickname || shortAddr(currentKing.address)}
@@ -154,7 +224,7 @@ export function ThroneHero({
                   {shortAddr(currentKing.address)}
                 </div>
                 <div className="flex justify-center items-center gap-2 mb-4">
-                  <span className="text-throne-muted text-xs">Trónon:</span>
+                  <span className="text-throne-muted text-xs">Reigning for:</span>
                   <ReignTimer king={currentKing} />
                 </div>
                 {currentKing.achievements > 0 && (
@@ -164,17 +234,17 @@ export function ThroneHero({
                 )}
                 {isOwnKing && (
                   <div className="mt-3 inline-block bg-throne-gold/10 border border-throne-gold/30 text-throne-gold text-xs px-3 py-1 rounded-full animate-bounce-sm">
-                    🎉 Te vagy a jelenlegi király!
+                    🎉 You are the current king!
                   </div>
                 )}
               </>
             ) : (
               <>
-                <div className="text-throne-muted text-sm mb-2">A trón üres…</div>
+                <div className="text-throne-muted text-sm mb-2">The throne is empty…</div>
                 <div className="text-2xl font-display font-bold text-throne-muted">
-                  Senki sem ül a trónon
+                  No one sits on the throne
                 </div>
-                <div className="text-throne-muted text-xs mt-2">Légy az első!</div>
+                <div className="text-throne-muted text-xs mt-2">Be the first!</div>
               </>
             )}
           </div>
@@ -183,32 +253,39 @@ export function ThroneHero({
         {/* Claim form */}
         {!isConfigured ? (
           <div className="bg-throne-surface border border-throne-border rounded-xl p-6 text-throne-muted text-sm">
-            ⚙️ A kontraktot még nem deployolták. Futtasd: <code className="font-mono text-throne-gold2">npm run deploy</code>
+            ⚙️ Contract not deployed yet. Run: <code className="font-mono text-throne-gold2">npm run deploy</code>
           </div>
         ) : !wallet ? (
-          <button
-            onClick={onConnect}
-            className="group relative inline-flex items-center gap-3 bg-gradient-to-r from-throne-gold to-throne-gold2 text-black font-bold font-display text-lg px-10 py-4 rounded-xl transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(245,166,35,0.4)] active:scale-100"
-          >
-            <span>🦊</span>
-            <span>Wallet csatlakoztatása</span>
-          </button>
+          <div className="flex justify-center">
+            <button
+              onClick={onConnect}
+              className="group relative inline-flex items-center gap-3 bg-gradient-to-r from-throne-gold to-throne-gold2 text-black font-bold font-display text-lg px-10 py-4 rounded-xl transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(245,166,35,0.4)] active:scale-100"
+            >
+              <span>🦊</span>
+              <span>Connect Wallet</span>
+            </button>
+          </div>
         ) : !chainOk ? (
-          <button
-            onClick={onConnect}
-            className="inline-flex items-center gap-2 bg-throne-purple text-white font-bold px-8 py-3 rounded-xl hover:bg-throne-purple2 transition-all hover:scale-105"
-          >
-            🔗 Váltás QAN TestNetre
-          </button>
+          <div className="flex justify-center">
+            <button
+              onClick={onConnect}
+              className="inline-flex items-center gap-2 bg-throne-purple text-white font-bold px-8 py-3 rounded-xl hover:bg-throne-purple2 transition-all hover:scale-105"
+            >
+              🔗 Switch to QAN TestNet
+            </button>
+          </div>
         ) : isOwnKing ? (
-          <div className="text-throne-gold font-display text-lg">
-            👑 Te vagy a király! Tartsd meg a trónodat.
+          <div className="flex flex-col items-center gap-2">
+            <div className="text-throne-gold font-display text-lg">
+              👑 You are the king! Hold your throne.
+            </div>
+            <SavedNicknameEditor wallet={wallet} />
           </div>
         ) : (
           <form onSubmit={handleClaim} className="flex flex-col items-center gap-4">
             {claimed && (
               <div className="animate-fade-in-up bg-throne-success/10 border border-throne-success/30 text-throne-success px-6 py-3 rounded-xl font-medium">
-                🎉 Sikeresen elfoglaltad a trónt!
+                🎉 You have claimed the throne!
               </div>
             )}
             <div className="flex flex-col sm:flex-row items-stretch gap-3 w-full max-w-md">
@@ -217,7 +294,7 @@ export function ThroneHero({
                 type="text"
                 value={nickname}
                 onChange={(e) => { setNickname(e.target.value); onClearError(); }}
-                placeholder="Beceneved (pl. ThroneMaster)"
+                placeholder="Your nickname (e.g. ThroneMaster)"
                 maxLength={24}
                 minLength={2}
                 required
@@ -229,14 +306,14 @@ export function ThroneHero({
                 className="relative inline-flex items-center justify-center gap-2 bg-gradient-to-r from-throne-gold to-throne-gold2 text-black font-bold px-7 py-3 rounded-xl transition-all hover:scale-105 hover:shadow-[0_0_30px_rgba(245,166,35,0.4)] active:scale-100 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100 whitespace-nowrap"
               >
                 {txPending ? (
-                  <><span className="animate-spin">⚙️</span> Folyamatban…</>
+                  <><span className="animate-spin">⚙️</span> Processing…</>
                 ) : (
-                  <><span>👑</span> Foglald el! ({ENTRY_FEE_QANX} QANX)</>
+                  <><span>👑</span> Claim! ({ENTRY_FEE_QANX} QANX)</>
                 )}
               </button>
             </div>
             <p className="text-throne-muted text-xs">
-              Az előző királynak visszajár a befizetésed 60%-a · 30% a szezon nyereménypottba kerül
+              60% of your fee is refunded to the previous king · 30% goes to the season prize pot
             </p>
           </form>
         )}

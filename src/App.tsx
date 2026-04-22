@@ -36,7 +36,7 @@ function Header({ wallet, chainOk, onConnect }: {
                   onClick={onConnect}
                   className="text-xs bg-throne-crimson/15 border border-throne-crimson/30 text-throne-crimson px-3 py-1 rounded-lg hover:bg-throne-crimson/25 transition-all"
                 >
-                  Hálózat váltás
+                  Switch Network
                 </button>
               )}
             </div>
@@ -45,7 +45,7 @@ function Header({ wallet, chainOk, onConnect }: {
               onClick={onConnect}
               className="text-xs bg-throne-gold/10 border border-throne-gold/30 text-throne-gold px-4 py-1.5 rounded-lg hover:bg-throne-gold/20 transition-all font-medium"
             >
-              Wallet csatlakoztatása
+              Connect Wallet
             </button>
           )}
         </div>
@@ -71,7 +71,7 @@ function Footer() {
              className="hover:text-throne-gold transition-colors">QANScan</a>
         </div>
         <p className="text-throne-muted/40 text-[10px]">
-          EVM kompatibilis · QAN TestNet · Solidity 0.8.20
+          EVM Compatible · QAN TestNet · Solidity 0.8.20
         </p>
       </div>
     </footer>
@@ -89,7 +89,7 @@ function AchievementsSection({ bits }: { bits: number }) {
       >
         <div className="flex items-center justify-between">
           <h2 className="font-display font-bold text-xl text-gradient-gold flex items-center gap-2">
-            <span>🏅</span> Achievementek
+            <span>🏅</span> Achievements
           </h2>
           <span className="text-throne-muted group-hover:text-throne-text transition-colors">
             {open ? "▲" : "▼"}
@@ -97,7 +97,7 @@ function AchievementsSection({ bits }: { bits: number }) {
         </div>
         {!open && (
           <p className="text-throne-muted text-xs mt-1">
-            6 különböző achievement megszerezhető a játék során
+            6 unique achievements to unlock during the game
           </p>
         )}
       </button>
